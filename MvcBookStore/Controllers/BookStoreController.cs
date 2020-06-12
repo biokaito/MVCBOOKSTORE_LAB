@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using MvcBookStore.Models;
+using PagedList;
+using PagedList.Mvc;
 namespace MvcBookStore.Controllers
 {
     public class BookStoreController : Controller
@@ -15,11 +17,13 @@ namespace MvcBookStore.Controllers
         {
             return data.SACHes.OrderByDescending(a => a.Ngaycapnhat).Take(count).ToList();
         }
-        public ActionResult Index()
+        public ActionResult Index(int ? page)
         {
-            var sachmoi = Laysachmoi(5);
+            int pageSize = 5;
+            int pageNum = (page ?? 1);
+            var sachmoi = Laysachmoi(15);
 
-            return View(sachmoi);
+            return View(sachmoi.ToPagedList(pageNum,pageSize));
         }
         public ActionResult Nhaxuatban()
         {

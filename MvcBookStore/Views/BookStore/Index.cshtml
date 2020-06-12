@@ -1,4 +1,6 @@
-﻿@model IEnumerable<MvcBookStore.Models.SACH>
+﻿@using MvcBookStore.Models
+@using PagedList.Mvc;
+@model PagedList.PagedList<SACH>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
@@ -6,7 +8,7 @@
 <div class="row">
     
 </div>
-<h2>ĐÂY LÀ TRANG CHỦ</h2>
+<h2 style="text-align:center;color:red">SÁCH MỚI</h2>
 
 @foreach (var sach in Model)
 {
@@ -37,4 +39,5 @@
     </div>
    
 }
+Trang @(Model.PageCount<Model.PageNumber?0:Model.PageNumber)/@Model.PageCount;
 
