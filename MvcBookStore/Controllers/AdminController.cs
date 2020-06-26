@@ -97,5 +97,87 @@ namespace MvcBookStore.Controllers
                 return RedirectToAction("Sach");
             }
         }
+        public ActionResult Chitietsach(int id)
+        {
+            SACH sach = db.SACHes.SingleOrDefault(n => n.Masach == id);
+            ViewBag.Masach = sach.Masach;
+            if (sach == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            return View(sach);
+        }
+        [HttpGet]
+        public ActionResult Xoasach(int id)
+        {
+            SACH sach = db.SACHes.SingleOrDefault(n => n.Masach == id);
+            ViewBag.Masach = sach.Masach;
+            if(sach == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            return View(sach);
+        }
+        [HttpPost,ActionName("Xoasach")]
+        public ActionResult Xacnhanxoa(int id)
+        {
+            SACH sach = db.SACHes.SingleOrDefault(n => n.Masach == id);
+            ViewBag.Masach = sach.Masach;
+            if(sach == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            db.SACHes.DeleteOnSubmit(sach);
+            db.SubmitChanges();
+            return RedirectToAction("Sach");
+        }
+        [HttpGet]
+        public ActionResult Suasach(int id)
+        {
+            SACH sach = db.SACHes.SingleOrDefault(n => n.Masach == id);
+            if(sach == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            ViewBag.MaCD = new SelectList(db.CHUDEs.ToList().OrderBy(n => n.TenChuDe), "MaCD", "TenChude");
+            ViewBag.MaNXB = new SelectList(db.NHAXUATBANs.ToList().OrderBy(n => n.TenNXB), "MaNXB", "TenNXB");
+            return View(sach);
+        }
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Suasach(SACH sach, HttpPostedFileBase fileUpload)
+        {
+            ViewBag.MaCD = new SelectList(db.CHUDEs.ToList().OrderBy(n => n.TenChuDe), "MaCD", "TenChude");
+            ViewBag.MaNXB = new SelectList(db.NHAXUATBANs.ToList().OrderBy(n => n.TenNXB), "MaNXB", "TenNXB");
+            if (fileUpload == null)
+            {
+                ViewBag.Thongbao = "Choose your image, please!";
+                return View();
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    var fileName = Path.GetFileName(fileUpload.FileName);
+                    var path = Path.Combine(Server.MapPath("~/Hinhsanpham"), fileName);
+                    if (System.IO.File.Exists(path))
+                    {
+                        ViewBag.Thongbao = "Ảnh đã tồn tại";
+                    }
+                    else
+                    {
+                        fileUpload.SaveAs(path);
+                    }
+                    sach.Anhbia = fileName;
+                    UpdateModel(sach);
+                    db.SubmitChanges();
+                }
+                return RedirectToAction("Sach");
+            }
+        }
     }
 }
